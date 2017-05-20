@@ -74,8 +74,8 @@ public class CoreService {
 
 				if ("公司介绍".equals(content)) {
 					Article article = new Article();
-					article.setTitle("广州融声信息科技有限公司介绍");
-					article.setDescription("专注硬件开发，音频卡研发几十年的互联网高新企业。");
+					article.setTitle("xxx");
+					article.setDescription("xxxxx");
 					article.setPicUrl("http://www.excecard.com/images/tiyan_1.jpg");
 					article.setUrl("http://www.excecard.com");
 					
@@ -111,7 +111,7 @@ public class CoreService {
 					// 是否是二维码关注
 					if (StringUtil.validStr(eventKey)) {
 						log.info("----------二维码关注---------" + eventKey);
-						respContent = "欢迎关注享必得，想看更多分享，点击菜单进入圈子吧~~<a href=\"http://www.w3school.com.cn\">热点圈子</a>";
+						respContent = "欢迎关注享必得，想看更多分享，点击菜单进入圈子吧~~<a href=\"http://www.xxxx.com\">热点圈子</a>";
 						
 						if(eventKey.startsWith(UNSUBSCRIBE_SCAN_PREFIX)) {
 							/*
@@ -127,9 +127,7 @@ public class CoreService {
 							article.setTitle("");
 							article.setDescription("");
 							article.setPicUrl("");
-							article.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9e49096dbba0159e" +
-									"&redirect_uri=https%3A%2F%2Fwx.excecard.com%2FxiangbideWXBG%2FdetailPageAction%2Fdetail.html" +
-									"&response_type=code&scope=snsapi_base&state="+""+"#wechat_redirect");
+							article.setUrl("https://www.xxxx.com/");
 
 							return produceSingleNewMessage(fromUserName, toUserName, article);
 						}
@@ -138,9 +136,7 @@ public class CoreService {
 					} else {
 						log.info("----------搜索关注------------" + eventKey);
 						respContent = "欢迎关注享必得，想看更多分享，点击菜单进入圈子吧。" +
-								"<a href=\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9e49096dbba0159e" +
-								"&redirect_uri=https%3A%2F%2Fwx.excecard.com%2FxiangbideWXBG%2FmainPageAction%2FmainPage.html" +
-								"&response_type=code&scope=snsapi_base&state=1#wechat_redirect\">热点圈子</a>";
+								"<a href=\"https://www.xxxx.com\">热点圈子</a>";
 					}
 				}
 				// 取消订阅
@@ -155,8 +151,8 @@ public class CoreService {
 //						respContent = "广州融声信息科技有限公司：专注音频卡研发30年的技术团队。想看更多详情，请回复：公司介绍";
 
 						Article article = new Article();
-						article.setTitle("广州融声信息科技有限公司介绍");
-						article.setDescription("专注硬件开发，音频卡研发几十年的互联网高新企业。");
+						article.setTitle("xxxx");
+						article.setDescription("xxx");
 						article.setPicUrl("http://www.excecard.com/images/tiyan_1.jpg");
 						article.setUrl("http://www.excecard.com");
 						
@@ -174,9 +170,7 @@ public class CoreService {
 					article.setTitle("");
 					article.setDescription("");
 					article.setPicUrl("");
-					article.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx9e49096dbba0159e" +
-							"&redirect_uri=https%3A%2F%2Fwx.excecard.com%2FxiangbideWXBG%2FdetailPageAction%2Fdetail.html" +
-							"&response_type=code&scope=snsapi_base&state="+""+"#wechat_redirect");
+					article.setUrl("https://www.xxx.com/");
 					//推送单篇新闻图片消息
 					respMessage = produceSingleNewMessage(fromUserName,toUserName,article);
 					return respMessage;
