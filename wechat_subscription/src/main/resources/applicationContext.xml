@@ -13,9 +13,8 @@
     http://www.springframework.org/schema/jee/spring-jee-3.0.xsd"
 	default-autowire="byName" default-lazy-init="false">
 
-	<!-- 引入数据源配置属性文件 方式1 -->
 	<bean id="jdbcConfig" name="jdbcConfig"
-		class="com.cybbj.service.EncryptPropertyPlaceholderConfigurer"
+		class="com.whoshell.service.EncryptPropertyPlaceholderConfigurer"
 		p:location="classpath:jdbc.properties" p:fileEncoding="utf-8"></bean>
 
 	<!-- 配置数据源 -->
@@ -52,7 +51,7 @@
 		<property name="dataSource" ref="dbDataSource" />
 		<property name="mapperLocations">
 		  <array>
-		      <value>classpath*:com/cybbj/**/*Mapper.xml</value>
+		      <value>classpath*:com/whoshell/**/*Mapper.xml</value>
 		      <value>classpath*:pub/source/dao/*Mapper.xml</value>
 		  </array>
 		</property>
@@ -104,7 +103,7 @@
 	
     <!-- 设置需要进行Spring注解扫描的类包 -->
     <!-- springMVC配置中配置才生效，所以注释掉 -->
-    <context:component-scan base-package="com.cybbj" />
+    <context:component-scan base-package="com.whoshell" />
     <context:component-scan base-package="pub.source" />
 
 	<!-- 应用程序定时器配置 -->
@@ -112,7 +111,6 @@
 		<property name="triggers">
 			<list>
 				<ref bean="accessTokenTrigger" />
-				<ref bean="articleQrcodeTrigger" />
 			</list>
 		</property>
 		<property name="autoStartup" value="true" />
@@ -131,15 +129,4 @@
 		<!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
 	</bean>
 	
-	<bean id="articleQrcodeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="jobDetail" ref="articleQrcodeJobDetail" />
-		<property name="cronExpression" value="0 51 15 * * ?" /><!-- 每隔1个小时触发一次 -->
-	</bean>
-	<bean id="articleQrcodeJobDetail"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="articleQrcodeTimerService" />
-		<property name="targetMethod" value="execute" />
-		<property name="concurrent" value="false" />
-		<!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
-	</bean>
 </beans>
