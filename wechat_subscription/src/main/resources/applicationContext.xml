@@ -1,20 +1,145 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:aop="http://www.springframework.org/schema/aop"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:tx="http://www.springframework.org/schema/tx"
-    xmlns:context="http://www.springframework.org/schema/context"
-     xmlns:jee="http://www.springframework.org/schema/jee"
-    xsi:schemaLocation="
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
     http://www.springframework.org/schema/jee
-    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd" default-autowire="byName"
-    default-lazy-init="true">
+    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd"
+	default-autowire="byName" default-lazy-init="false">
 
-    <!-- 扫描web包,使用spring的注解--> 
-    <context:component-scan base-package="com.whoshell"></context:component-scan> 
+	<!-- 引入数据源配置属性文件 方式1 -->
+	<bean id="jdbcConfig" name="jdbcConfig"
+		class="com.cybbj.service.EncryptPropertyPlaceholderConfigurer"
+		p:location="classpath:jdbc.properties" p:fileEncoding="utf-8"></bean>
+
+	<!-- 配置数据源 -->
+	<bean id="dbDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close" depends-on="jdbcConfig"> 
+		<property name="driverClass">
+			<value>${driverClass}</value>
+		</property>
+		<property name="jdbcUrl">
+			<!-- 北京服务器 -->
+			<value>${jdbcUrl}</value>
+		</property>
+		<property name="user">
+			<value>${user}</value>
+		</property>
+		<property name="password">
+			<value>${password}</value>
+		</property>
+		<property name="minPoolSize"><value>3</value></property>
+  		<property name="maxPoolSize"><value>30</value></property>	<!--连接池中保留的最大连接数。Default: 30 --> 
+  		<property name="maxIdleTime"><value>60</value></property><!--最大空闲时间,60秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 --> 
+  		<property name="acquireIncrement"><value>5</value></property>
+  		<property name="maxStatements"><value>0</value></property>
+ 		<property name="initialPoolSize"><value>3</value></property><!--初始化时获取三个连接，取值应在minPoolSize与maxPoolSize之间。Default: 3 --> 
+  		<property name="idleConnectionTestPeriod"><value>60</value></property><!--每60秒检查所有连接池中的空闲连接。Default: 0 -->
+  		<property name="testConnectionOnCheckin"><value>false</value></property> 
+  		<property name="acquireRetryAttempts"><value>30</value></property><!--连接池在获得新连接失败时重试的次数，如果小于等于0则无限重试直至连接获得成功。Default: 30 --> 
+		<property name="checkoutTimeout"><value>0</value></property> <!--当连接池用完时客户端调用getConnection()后等待获取新连接的时间，超时后将抛出 SQLException,如设为0则无限期等待。单位毫秒。Default: 0 --> 
+  		<property name="breakAfterAcquireFailure"><value>true</value></property>
+ 		<property name="testConnectionOnCheckout"><value>false</value></property>
+	</bean>
+	<!-- 这里的ID与name不能写成sqlSessionFactory -->
+	<bean id="sessionFactory" name="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">		
+		<property name="dataSource" ref="dbDataSource" />
+		<property name="mapperLocations">
+		  <array>
+		      <value>classpath*:com/cybbj/**/*Mapper.xml</value>
+		      <value>classpath*:pub/source/dao/*Mapper.xml</value>
+		  </array>
+		</property>
+		<property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageHelper">
+                    <property name="properties">
+                        <value>
+                        	<!-- 方言为mysql -->
+                        	<!-- 4.0.0以后版本可以不设置该参数 -->
+                            dialect=mysql
+                           	<!-- 该参数默认为false -->
+					        <!-- 设置为true时，会将RowBounds第一个参数offset当成pageNum页码使用 -->
+					        <!-- 和startPage中的pageNum效果一样-->
+                            offsetAsPageNum=true
+                            <!-- 该参数默认为false -->
+		        			<!-- 设置为true时，使用RowBounds分页会进行count查询 -->
+                            rowBoundsWithCount=false
+                            <!-- 设置为true时，如果pageSize=0或者RowBounds.limit = 0就会查询出全部的结果 -->
+		        			<!-- （相当于没有执行分页查询，但是返回结果仍然是Page类型）-->
+                            pageSizeZero=true
+                            <!-- 3.3.0版本可用 - 分页参数合理化，默认false禁用 -->
+					        <!-- 启用合理化时，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页 -->
+					        <!-- 禁用合理化时，如果pageNum<1或pageNum>pages会返回空数据 -->
+                            reasonable=true
+                            <!-- 支持通过Mapper接口参数来传递分页参数 -->
+                            supportMethodsArguments=true
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+	</bean>
+
+	<!-- 不能使用 <property name="sqlSessionFactory" ref="sessionFactory"></property>方式,只能使用sqlSessionFactoryBeanName方式-->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.cybbj,pub.source.dao"></property>
+		<property name="sqlSessionFactoryBeanName" value="sessionFactory"></property>
+		<!-- <property name="sqlSessionFactory" ref="sessionFactory"></property> -->
+	</bean>
+	
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		p:dataSource-ref="dbDataSource"></bean>
+
+	<!-- 声明式事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+	
+    <!-- 设置需要进行Spring注解扫描的类包 -->
+    <!-- springMVC配置中配置才生效，所以注释掉 -->
+    <context:component-scan base-package="com.cybbj" />
+    <context:component-scan base-package="pub.source" />
+
+	<!-- 应用程序定时器配置 -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="accessTokenTrigger" />
+				<ref bean="articleQrcodeTrigger" />
+			</list>
+		</property>
+		<property name="autoStartup" value="true" />
+	</bean>
+
+	<!-- 配置定时器：每2小时刷新一次微信接口调用全局token -->
+	<bean id="accessTokenTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="tokenJobDetail" />
+		<property name="cronExpression" value="0 0 */1 * * ?" /><!-- 每隔1个小时触发一次 -->
+	</bean>
+	<bean id="tokenJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="accessTokenService" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+		<!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+	</bean>
+	
+	<bean id="articleQrcodeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="articleQrcodeJobDetail" />
+		<property name="cronExpression" value="0 51 15 * * ?" /><!-- 每隔1个小时触发一次 -->
+	</bean>
+	<bean id="articleQrcodeJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="articleQrcodeTimerService" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+		<!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+	</bean>
 </beans>
