@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "http://toolkit.alibaba-inc.com/dtd/log4j/log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<!-- ===================================================================== -->
+	<!-- 以下是appender的定义，定义日志输出的目的地、输出方式及过滤级别 -->
+	<!-- ===================================================================== -->
+	<!-- 将信息输到控制台 -->	
+	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} %p %t [%L] %c - %m%n" />
+		</layout>
+	</appender>
+	
+	<!-- 未定义拦截信息 -->
+	<appender name="other-log" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="${logBasePathXBD}/other-log.log" />
+		<param name="append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} %p %t [%L] %c - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- 所有定义debug,info,warn,error信息日志 -->
+	<appender name="all-log" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="${logBasePathXBD}/all.log" />
+		<param name="append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} %p %t [%L] %c - %m%n" />
+		</layout>		
+	</appender>
+
+	<!-- 定义debug信息日志 -->
+	<appender name="debug-log" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="${logBasePathXBD}/debug.log" />
+		<param name="append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} %p %t [%L] %c - %m%n" />
+		</layout>		
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="DEBUG"></param>
+			<param name="LevelMin" value="DEBUG"></param>
+		</filter>
+	</appender>
+	<!-- 定义info信息日志 -->
+	<appender name="info-log" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="${logBasePathXBD}/info.log" />
+		<param name="append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} %p %t [%L] %c - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="INFO"></param>
+			<param name="LevelMin" value="INFO"></param>
+		</filter>
+	</appender>
+	<!-- 定义warn信息日志 -->
+	<appender name="warn-log" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="${logBasePathXBD}/warn.log" />
+		<param name="append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} %p %t [%L] %c - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="WARN"></param>
+			<param name="LevelMin" value="WARN"></param>
+		</filter>
+	</appender>
+	<!-- 定义error信息日志 -->
+	<appender name="error-log" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="${logBasePathXBD}/error.log" />
+		<param name="append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss:SSS} %p %t [%L] %c - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="ERROR"></param>
+			<param name="LevelMin" value="ERROR"></param>
+		</filter>
+	</appender>
+
+	<!-- ===================================================================== -->
+	<!-- 日志写出器：每一个logger可以有多个输出目的地和输出方式 -->
+	<!-- ===================================================================== -->
+	<logger name="com.cybbj" additivity="false">
+		<level value="ALL"/>
+		<appender-ref ref="stdout" />
+		<appender-ref ref="all-log"/>
+		<appender-ref ref="debug-log"/>
+		<appender-ref ref="info-log"/>
+		<appender-ref ref="warn-log"/>
+		<appender-ref ref="error-log"/>
+	</logger>
+
+	<!-- ===================================================================== -->
+	<!-- Root logger 所有logger的基类，没有定义的logger将会使用root logger -->
+	<!-- ===================================================================== -->
+	<root>
+		<level value="info" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="other-log" />		
+	</root>
+</log4j:configuration>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+    http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+	<display-name></display-name>
+
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<!-- 日志文件根路径设置 -->
+	<listener>
+		<listener-class>com.whoshell.util.LogBasePath</listener-class>
+
+	</listener>
+	<!-- 从类路径下加载Spring配置文件,classpath关键字特指类路径下加载 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+            classpath*:applicationContext.xml
+        </param-value>
+	</context-param>
+
+	<!-- 负责启动spring容器的监听器,它将引用上面上下面参数获得spring配置文件地址 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- 声明DispatcherServlet (可以配置多个，用于处理不同的业务！！！！) -->
+	<servlet>
+		<servlet-name>springMVC</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springMVC</servlet-name>
+		<url-pattern>*.html</url-pattern>
+	</servlet-mapping>
+
+	<!-- 单位：分 -->
+	<session-config>
+		<session-timeout>20</session-timeout>
+	</session-config>
+	
+	<!-- 服务器启动，初始化全局access_token -->
+	<listener>
+		<listener-class>com.whoshell.util.AccessTokenInit</listener-class>
+	</listener>
+</web-app>

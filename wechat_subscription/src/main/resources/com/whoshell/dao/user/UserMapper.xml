@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.whoshell.dao.user.UserDao">
+		<resultMap type="com.whoshell.pojo.User" id="UserMap">
+		<id property="id" column="vc_id"/>
+		<result property="account" column="n_account"/>
+		<result property="password" column="vc_account_password"/>
+		<result property="name" column="vc_staff_name"/>
+		<result property="phoneNum" column="n_phone_num"/>
+		<result property="sex" column="n_sex"/>
+		<result property="birthday" column="vc_birthday"/>
+		<result property="nickname" column="vc_nickname"/>
+		<result property="pictureUrL" column="vc_photourl"/>
+		<result property="openId" column="vc_wx_openid"/>
+		<result property="unionId" column="vc_wx_unionid"/>
+		<result property="createStaff" column="vc_create_staff"/>
+		<result property="createTime" column="vc_create_time"/>
+		<result property="updateStaff" column="vc_update_staff"/>
+		<result property="updateTime" column="vc_update_time"/>
+		<result property="state" column="vc_state"/>
+		
+	</resultMap>
+	<select id="getUserByUnionId" parameterType="String" resultMap="UserMap">
+		select vc_id,n_account,vc_account_password,vc_staff_name,n_phone_num,n_sex,vc_birthday,
+			   vc_nickname,vc_wx_openid,vc_wx_unionid,vc_create_staff,vc_create_time,vc_update_staff,vc_update_time,vc_photourl 
+		from t_users 
+		where vc_wx_unionid=#{unionId}
+	</select>
+	
+</mapper>
