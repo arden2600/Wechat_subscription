@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Test;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,7 +17,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.whoshell.constant.Constants;
 import com.whoshell.pojo.weixin.Button;
 import com.whoshell.pojo.weixin.ClickButton;
-import com.whoshell.pojo.weixin.ComplexButton;
 import com.whoshell.pojo.weixin.Menu;
 import com.whoshell.pojo.weixin.SubButton;
 import com.whoshell.pojo.weixin.ViewButton;
@@ -59,9 +59,6 @@ public class WechatMenuUtil {
 //            }]
 //       }]
 // }";
-		//一级
-		ComplexButton parent = new ComplexButton();
-		//二级
 		SubButton subButton = new SubButton();
 		ClickButton us = new ClickButton();
 		us.setName("我们");
@@ -76,11 +73,9 @@ public class WechatMenuUtil {
 		subButton.setName("菜单");
 		subButton.setSub_button(new Button[]{quanzi});
 		
-		parent.setName("button");
-		parent.setSub_buttons(new Button[]{us,subButton});
 		
 		Menu menu = new Menu();
-		menu.setButtons(new Button[]{parent});
+		menu.setButton(new Button[]{us,subButton});
        
 		String submitStr = JSONObject.toJSONString(menu);
 		log.info("提交的自定义菜单json字符串:>> " + submitStr);
@@ -115,5 +110,30 @@ public class WechatMenuUtil {
 			e.printStackTrace();
 		}
 		return retStr;
+	}
+	
+	@Test
+	public void tt(){
+				SubButton subButton = new SubButton();
+				ClickButton us = new ClickButton();
+				us.setName("我们");
+				us.setType("click");
+				us.setKey("V1001_ABOUT_US");
+				
+				ViewButton quanzi = new ViewButton();
+				quanzi.setName("圈子");
+				quanzi.setType("view");
+				quanzi.setUrl("https://wx.example.com/wechatsubscription/MyJsp.jsp");
+				
+				subButton.setName("菜单");
+				subButton.setSub_button(new Button[]{quanzi});
+				
+				
+				Menu menu = new Menu();
+				menu.setButton(new Button[]{us,subButton});
+		       
+				String submitStr = JSONObject.toJSONString(menu);
+				System.out.println("提交的自定义菜单json字符串:>> " + submitStr);
+				JSONObject menuJson = JSONObject.parseObject(submitStr);
 	}
 }

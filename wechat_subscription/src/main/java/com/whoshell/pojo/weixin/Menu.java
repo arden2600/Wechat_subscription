@@ -8,14 +8,14 @@ package com.whoshell.pojo.weixin;
 public class Menu {
 
 	//菜单中的按钮选项
-	private Button[] buttons;
+	private Button[] button;
 
-	public Button[] getButtons() {
-		return buttons;
+	public Button[] getButton() {
+		return button;
 	}
 
-	public void setButtons(Button[] buttons) {
-		this.buttons = buttons;
+	public void setButton(Button[] button) {
+		this.button = button;
 	}
 
 }
